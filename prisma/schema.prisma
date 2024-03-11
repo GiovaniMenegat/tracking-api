@@ -17,7 +17,8 @@ model User {
   id Int @id @default(autoincrement())
   username String
   email String @unique
-  password String 
+  hash String
+  hashRt String?
   packages Packages[]
 
   @@map("user")
