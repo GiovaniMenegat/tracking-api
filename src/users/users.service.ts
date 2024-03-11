@@ -8,9 +8,9 @@ import { NotFoundError } from 'src/common/errors/types/NotFoundError';
 export class UsersService {
   constructor(private readonly usersRepository: UsersRepository) {}
 
-  create(createUserDto: CreateUserDto) {
-    return this.usersRepository.create(createUserDto);
-  }
+  // create(createUserDto: CreateUserDto) {
+  //   return this.usersRepository.create(createUserDto);
+  // }
 
   findAll() {
     return this.usersRepository.findAll();

@@ -8,11 +8,11 @@ import { UpdateUserDto } from '../dto/update-user.dto';
 export class UsersRepository {
   constructor(private readonly prisma: PrismaService) {}
 
-  async create(createUserDto: CreateUserDto): Promise<UserEntity> {
-    return this.prisma.user.create({
-      data: createUserDto,
-    });
-  }
+  // async create(createUserDto: CreateUserDto): Promise<UserEntity> {
+  //   return this.prisma.user.create({
+  //     data: createUserDto,
+  //   });
+  // }
 
   async findAll(): Promise<UserEntity[]> {
     return this.prisma.user.findMany();
