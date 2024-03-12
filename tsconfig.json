@@ -16,7 +16,7 @@
     "noImplicitAny": false,
     "strictBindCallApply": false,
     "forceConsistentCasingInFileNames": false,
-    "noFallthroughCasesInSwitch": false,
-    "files": ["types.d.ts"]
+    "noFallthroughCasesInSwitch": false
+    // "files": ["types.d.ts"]
   }
 }
