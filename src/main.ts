@@ -9,6 +9,7 @@ import { ConflictInterceptor } from './common/errors/interceptors/conflict.inter
 import { DatabaseInterceptor } from './common/errors/interceptors/database.interceptor';
 import { UnathorizedInterceptor } from './common/errors/interceptors/unauthorized.interceptor';
 import { NotFoundInterceptor } from './common/errors/interceptors/notfound.interceptor';
+import { AtGuard } from './common/guards';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestFastifyApplication>(
