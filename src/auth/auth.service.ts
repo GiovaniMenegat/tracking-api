@@ -1,27 +1,21 @@
 import { ForbiddenException, Injectable } from '@nestjs/common';
-import { PrismaService } from 'src/prisma/prisma.service';
 import { SignupDto } from './dto/signup.dto';
 import * as bcrypt from 'bcrypt';
 import { Tokens } from './types';
 import { JwtService } from '@nestjs/jwt';
 import { SigninDto } from './dto/signin.dto';
+import { AuthRepository } from './repositories/auth.repository';
 
 @Injectable()
 export class AuthService {
   constructor(
-    private readonly prisma: PrismaService,
+    private readonly authRepository: AuthRepository,
     private jwtService: JwtService,
   ) {}
 
   async signupLocal(signupDto: SignupDto): Promise<Tokens> {
     const hash = await this.hashData(signupDto.password);
-    const newUser = await this.prisma.user.create({
-      data: {
-        username: signupDto.username,
-        email: signupDto.email,
-        hash,
-      },
-    });
+    const newUser = await this.authRepository.signupLocal(signupDto, hash);
 
     const tokens = await this.getTokens(newUser.id, newUser.email);
     await this.updateRtHash(newUser.id, tokens.refresh_token);
@@ -30,11 +24,7 @@ export class AuthService {
   }
 
   async signinLocal(signinDto: SigninDto): Promise<Tokens> {
-    const user = await this.prisma.user.findUnique({
-      where: {
-        email: signinDto.email,
-      },
-    });
+    const user = await this.authRepository.signinLocal(signinDto.email);
 
     if (!user) {
       throw new ForbiddenException('Access Denied');
@@ -53,25 +43,11 @@ export class AuthService {
   }
 
   async logout(userId: number) {
-    await this.prisma.user.updateMany({
-      where: {
-        id: userId,
-        hashRt: {
-          not: null,
-        },
-      },
-      data: {
-        hashRt: null,
-      },
-    });
+    await this.authRepository.logout(userId);
   }
 
   async refreshTokens(userId: number, rt: string): Promise<Tokens> {
-    const user = await this.prisma.user.findUnique({
-      where: {
-        id: userId,
-      },
-    });
+    const user = await this.authRepository.refreshTokens(userId);
 
     if (!user || !user.hashRt) {
       throw new ForbiddenException('Access Denied');
@@ -102,7 +78,7 @@ export class AuthService {
         },
         {
           secret: process.env.JWT_AT_SECRET,
-          expiresIn: 60 * 15,
+          expiresIn: 60 * 15, //15 minutes
         },
       ),
       this.jwtService.signAsync(
@@ -112,7 +88,7 @@ export class AuthService {
         },
         {
           secret: process.env.JWT_RT_SECRET,
-          expiresIn: 60 * 60 * 24 * 7,
+          expiresIn: 60 * 60 * 24 * 7, //1 week
         },
       ),
     ]);
@@ -125,13 +101,6 @@ export class AuthService {
 
   async updateRtHash(userId: number, rt: string) {
     const hash = await this.hashData(rt);
-    await this.prisma.user.update({
-      where: {
-        id: userId,
-      },
-      data: {
-        hashRt: hash,
-      },
-    });
+    await this.authRepository.updateRtHash(userId, hash);
   }
 }

@@ -4,7 +4,7 @@ import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
 import { AtStrategy, RtStrategy } from './strategies';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { UsersRepository } from 'src/users/repositories/users.repository';
+import { AuthRepository } from './repositories/auth.repository';
 
 @Module({
   imports: [JwtModule.register({})],
@@ -14,7 +14,7 @@ import { UsersRepository } from 'src/users/repositories/users.repository';
     AtStrategy,
     RtStrategy,
     PrismaService,
-    UsersRepository,
+    AuthRepository,
   ],
 })
 export class AuthModule {}
