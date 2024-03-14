@@ -1,15 +1,27 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+} from '@nestjs/common';
 import { PackagesService } from './packages.service';
 import { CreatePackageDto } from './dto/create-package.dto';
 import { UpdatePackageDto } from './dto/update-package.dto';
+import { GetCurrentUserId } from 'src/common/decorators';
 
 @Controller('packages')
 export class PackagesController {
   constructor(private readonly packagesService: PackagesService) {}
 
   @Post()
-  create(@Body() createPackageDto: CreatePackageDto) {
-    return this.packagesService.create(createPackageDto);
+  create(
+    @Body() createPackageDto: CreatePackageDto,
+    @GetCurrentUserId() userId: number,
+  ) {
+    return this.packagesService.create(createPackageDto, userId);
   }
 
   @Get()
