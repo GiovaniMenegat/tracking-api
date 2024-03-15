@@ -4,6 +4,7 @@ import { UpdatePackageDto } from './dto/update-package.dto';
 import { PackagesRepository } from './repositories/packages.repository';
 import { trackNumber } from 'src/services/linkAndTrack/linkAndTrack.service';
 import { GetTrackResponse } from 'src/services/types/linkAndTrack.interface';
+import { findAllPackagesByUserResponse } from './types/packages.interface';
 
 @Injectable()
 export class PackagesService {
@@ -13,8 +14,10 @@ export class PackagesService {
     return this.packagesRepository.create(createPackageDto, userId);
   }
 
-  findAll() {
-    return `This action returns all packages`;
+  findAllPackagesByUser(
+    userId: number,
+  ): Promise<findAllPackagesByUserResponse> {
+    return this.packagesRepository.findAllPackagesByUser(userId);
   }
 
   async getTrack(trackingNumber: string): Promise<GetTrackResponse> {

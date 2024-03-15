@@ -25,8 +25,8 @@ export class PackagesController {
   }
 
   @Get()
-  findAll() {
-    return this.packagesService.findAll();
+  findAllPackagesByUser(@GetCurrentUserId() userId: number) {
+    return this.packagesService.findAllPackagesByUser(userId);
   }
 
   @Get(':trackingNumber')
