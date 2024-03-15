@@ -2,6 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { CreatePackageDto } from './dto/create-package.dto';
 import { UpdatePackageDto } from './dto/update-package.dto';
 import { PackagesRepository } from './repositories/packages.repository';
+import { trackNumber } from 'src/services/linkAndTrack/linkAndTrack.service';
+import { GetTrackResponse } from 'src/services/types/linkAndTrack.interface';
 
 @Injectable()
 export class PackagesService {
@@ -15,8 +17,10 @@ export class PackagesService {
     return `This action returns all packages`;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} package`;
+  async getTrack(trackingNumber: string): Promise<GetTrackResponse> {
+    const track = await trackNumber(trackingNumber);
+
+    return track;
   }
 
   update(id: number, updatePackageDto: UpdatePackageDto) {

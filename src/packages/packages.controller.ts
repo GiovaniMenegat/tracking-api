@@ -29,9 +29,9 @@ export class PackagesController {
     return this.packagesService.findAll();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.packagesService.findOne(+id);
+  @Get(':trackingNumber')
+  getTrack(@Param('trackingNumber') trackingNumber: string) {
+    return this.packagesService.getTrack(trackingNumber);
   }
 
   @Patch(':id')
