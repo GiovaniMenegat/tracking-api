@@ -9,13 +9,22 @@ import { ConflictInterceptor } from './common/errors/interceptors/conflict.inter
 import { DatabaseInterceptor } from './common/errors/interceptors/database.interceptor';
 import { UnathorizedInterceptor } from './common/errors/interceptors/unauthorized.interceptor';
 import { NotFoundInterceptor } from './common/errors/interceptors/notfound.interceptor';
-import { AtGuard } from './common/guards';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestFastifyApplication>(
     AppModule,
     new FastifyAdapter(),
   );
+
+  const config = new DocumentBuilder()
+    .setTitle('Tracking API')
+    .setDescription('API for tracking packages')
+    .setVersion('1.0')
+    .build();
+
+  const document = SwaggerModule.createDocument(app, config);
+  SwaggerModule.setup('docs', app, document);
 
   app.useGlobalPipes(
     new ValidationPipe({
