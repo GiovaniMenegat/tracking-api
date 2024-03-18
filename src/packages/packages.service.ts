@@ -5,6 +5,7 @@ import { PackagesRepository } from './repositories/packages.repository';
 import { trackNumber } from 'src/services/linkAndTrack/linkAndTrack.service';
 import { GetTrackResponse } from 'src/services/types/linkAndTrack.interface';
 import { findAllPackagesByUserResponse } from './types/packages.interface';
+import { PackageEntity } from './entities/package.entity';
 
 @Injectable()
 export class PackagesService {
@@ -30,7 +31,7 @@ export class PackagesService {
     userId: number,
     packageId: number,
     updatePackageDto: UpdatePackageDto,
-  ) {
+  ): Promise<PackageEntity> {
     return this.packagesRepository.update(userId, packageId, updatePackageDto);
   }
 
