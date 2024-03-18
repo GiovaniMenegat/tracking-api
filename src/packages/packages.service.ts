@@ -26,8 +26,12 @@ export class PackagesService {
     return track;
   }
 
-  update(id: number, updatePackageDto: UpdatePackageDto) {
-    return `This action updates a #${id} package`;
+  update(
+    userId: number,
+    packageId: number,
+    updatePackageDto: UpdatePackageDto,
+  ) {
+    return this.packagesRepository.update(userId, packageId, updatePackageDto);
   }
 
   remove(id: number) {

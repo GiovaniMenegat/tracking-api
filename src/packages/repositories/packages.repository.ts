@@ -4,8 +4,8 @@ import { CreatePackageDto } from '../dto/create-package.dto';
 import { PackageEntity } from '../entities/package.entity';
 import { NotFoundError } from 'src/common/errors/types/NotFoundError';
 import { Prisma } from '@prisma/client';
-import { UserEntity } from 'src/users/entities/user.entity';
 import { findAllPackagesByUserResponse } from '../types/packages.interface';
+import { UpdatePackageDto } from '../dto/update-package.dto';
 
 @Injectable()
 export class PackagesRepository {
@@ -64,5 +64,39 @@ export class PackagesRepository {
     }
 
     return user;
+  }
+
+  async update(
+    userId: number,
+    packageId: number,
+    updatePackageDto: UpdatePackageDto,
+  ): Promise<PackageEntity> {
+    const user = await this.prisma.user.findUnique({
+      where: {
+        id: userId,
+      },
+    });
+
+    if (!user) {
+      throw new NotFoundError('User not found');
+    }
+
+    const data: Prisma.PackagesUpdateInput = {
+      ...updatePackageDto,
+      user: {
+        connect: {
+          id: userId,
+        },
+      },
+    };
+
+    const updatedPackage = await this.prisma.packages.update({
+      where: {
+        id: packageId,
+      },
+      data,
+    });
+
+    return updatedPackage;
   }
 }

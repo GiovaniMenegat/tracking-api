@@ -35,8 +35,12 @@ export class PackagesController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updatePackageDto: UpdatePackageDto) {
-    return this.packagesService.update(+id, updatePackageDto);
+  update(
+    @GetCurrentUserId() userId: number,
+    @Param('id') packageId: string,
+    @Body() updatePackageDto: UpdatePackageDto,
+  ) {
+    return this.packagesService.update(userId, +packageId, updatePackageDto);
   }
 
   @Delete(':id')
