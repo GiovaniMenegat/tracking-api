@@ -99,4 +99,12 @@ export class PackagesRepository {
 
     return updatedPackage;
   }
+
+  async remove(packageId: number): Promise<void> {
+    await this.prisma.packages.delete({
+      where: {
+        id: packageId,
+      },
+    });
+  }
 }

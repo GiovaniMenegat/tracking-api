@@ -36,6 +36,6 @@ export class PackagesService {
   }
 
   remove(id: number) {
-    return `This action removes a #${id} package`;
+    return this.packagesRepository.remove(id);
   }
 }
