@@ -16,11 +16,19 @@ import {
   Public,
 } from 'src/common/decorators';
 import { RtGuard } from 'src/common/guards';
+import {
+  ApiCreatedResponse,
+  ApiForbiddenResponse,
+  ApiOkResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 
+@ApiTags('Auth')
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
+  @ApiCreatedResponse({ description: 'Created' })
   @Public()
   @Post('/local/signup')
   @HttpCode(HttpStatus.CREATED)
@@ -28,6 +36,7 @@ export class AuthController {
     return this.authService.signupLocal(signupDto);
   }
 
+  @ApiForbiddenResponse({ description: 'Access Denied' })
   @Public()
   @Post('/local/signin')
   @HttpCode(HttpStatus.OK)
@@ -35,12 +44,14 @@ export class AuthController {
     return this.authService.signinLocal(signinDto);
   }
 
+  @ApiOkResponse({ description: 'Ok' })
   @Post('/logout')
   @HttpCode(HttpStatus.OK)
   logout(@GetCurrentUserId() userId: number) {
     return this.authService.logout(userId);
   }
 
+  @ApiForbiddenResponse({ description: 'Access Denied' })
   @Public()
   @UseGuards(RtGuard)
   @Post('/refresh')
