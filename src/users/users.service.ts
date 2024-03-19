@@ -6,8 +6,8 @@ import { UsersRepository } from './repositories/users.repository';
 export class UsersService {
   constructor(private readonly usersRepository: UsersRepository) {}
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return this.usersRepository.update(id, updateUserDto);
+  update(userId: number, updateUserDto: UpdateUserDto) {
+    return this.usersRepository.update(userId, updateUserDto);
   }
 
   remove(id: number) {
