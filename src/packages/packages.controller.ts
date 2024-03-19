@@ -12,6 +12,7 @@ import { CreatePackageDto } from './dto/create-package.dto';
 import { UpdatePackageDto } from './dto/update-package.dto';
 import { GetCurrentUserId } from 'src/common/decorators';
 import {
+  ApiBearerAuth,
   ApiCreatedResponse,
   ApiForbiddenResponse,
   ApiNotFoundResponse,
@@ -20,6 +21,7 @@ import {
 } from '@nestjs/swagger';
 
 @ApiTags('Packages')
+@ApiBearerAuth()
 @Controller('packages')
 export class PackagesController {
   constructor(private readonly packagesService: PackagesService) {}

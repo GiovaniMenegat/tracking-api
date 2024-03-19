@@ -20,6 +20,7 @@ async function bootstrap() {
   const config = new DocumentBuilder()
     .setTitle('Tracking API')
     .setDescription('API for tracking packages')
+    .addBearerAuth()
     .setVersion('1.0')
     .build();
 

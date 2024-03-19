@@ -17,6 +17,7 @@ import {
 } from 'src/common/decorators';
 import { RtGuard } from 'src/common/guards';
 import {
+  ApiBearerAuth,
   ApiCreatedResponse,
   ApiForbiddenResponse,
   ApiOkResponse,
@@ -24,6 +25,7 @@ import {
 } from '@nestjs/swagger';
 
 @ApiTags('Auth')
+@ApiBearerAuth()
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
