@@ -10,7 +10,7 @@ export class UsersService {
     return this.usersRepository.update(userId, updateUserDto);
   }
 
-  remove(id: number) {
-    return this.usersRepository.remove(id);
+  remove(userId: number) {
+    return this.usersRepository.remove(userId);
   }
 }
