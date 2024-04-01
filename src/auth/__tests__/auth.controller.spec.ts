@@ -39,4 +39,14 @@ describe('AuthController', () => {
     const result = await authController.logout(1);
     expect(result).toBeTruthy();
   });
+
+  it('should refresh rt token', async () => {
+    const result = await authController.refreshTokens(
+      1,
+      tokensMock.refresh_token,
+    );
+
+    expect(result.access_token).toEqual(tokensMock.access_token);
+    expect(result.refresh_token).toEqual(tokensMock.refresh_token);
+  });
 });
