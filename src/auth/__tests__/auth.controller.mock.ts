@@ -2,6 +2,7 @@ import { AuthService } from '../auth.service';
 import { SignupDto } from '../dto/signup.dto';
 import * as Chance from 'chance';
 import { Tokens } from '../types';
+import { SigninDto } from '../dto/signin.dto';
 
 const chance = new Chance();
 
@@ -10,6 +11,11 @@ export const signUpMock = {
   email: chance.email(),
   password: chance.string(),
 } as SignupDto;
+
+export const signInMock = {
+  email: chance.email(),
+  password: chance.string(),
+} as SigninDto;
 
 export const tokensMock = {
   access_token: chance.string(),
