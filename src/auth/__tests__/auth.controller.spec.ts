@@ -34,4 +34,9 @@ describe('AuthController', () => {
     expect(result.access_token).toEqual(tokensMock.access_token);
     expect(result.refresh_token).toEqual(tokensMock.refresh_token);
   });
+
+  it('should logout user', async () => {
+    const result = await authController.logout(1);
+    expect(result).toBeTruthy();
+  });
 });
