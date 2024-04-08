@@ -59,7 +59,7 @@ export class PackagesController {
   @Patch(':id')
   update(
     @GetCurrentUserId() userId: number,
-    @Param('id') packageId: string,
+    @Param('id') packageId: number,
     @Body() updatePackageDto: UpdatePackageDto,
   ) {
     return this.packagesService.update(userId, +packageId, updatePackageDto);
@@ -68,7 +68,7 @@ export class PackagesController {
   @ApiOkResponse({ description: 'Ok' })
   @ApiForbiddenResponse({ description: 'Access Denied' })
   @Delete(':id')
-  remove(@Param('id') id: string) {
+  remove(@Param('id') id: number) {
     return this.packagesService.remove(+id);
   }
 }
