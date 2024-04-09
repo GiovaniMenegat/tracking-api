@@ -6,7 +6,6 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateUserMock, PrismaAuthMock } from './auth.service.mock';
 import { signInMock } from './auth.controller.mock';
 import * as bcrypt from 'bcrypt';
-import { ForbiddenException } from '@nestjs/common';
 
 describe('AuthService', () => {
   let authService: AuthService;
@@ -73,7 +72,7 @@ describe('AuthService', () => {
       try {
         await authService.signinLocal({
           email: 'email',
-          password: 'wrodngPass',
+          password: 'wrongPass',
         });
       } catch (error) {
         expect(error.message).toEqual('Access Denied');
@@ -84,11 +83,9 @@ describe('AuthService', () => {
 
   describe('Logout service', () => {
     it('should logout a user', async () => {
-      authRepository.logout = jest.fn().mockResolvedValue(true);
-
       await authService.logout(1);
 
-      expect(authRepository.logout).toHaveBeenCalled();
+      expect(prisma.user.updateMany).toHaveBeenCalled();
     });
   });
 });
