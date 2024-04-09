@@ -3,7 +3,11 @@ import { AuthService } from '../auth.service';
 import { JwtModule } from '@nestjs/jwt';
 import { AuthRepository } from '../repositories/auth.repository';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { CreateUserMock, PrismaAuthMock } from './auth.service.mock';
+import {
+  CreateUserMock,
+  PrismaAuthMock,
+  UserEntityMock,
+} from './auth.service.mock';
 import { signInMock } from './auth.controller.mock';
 import * as bcrypt from 'bcrypt';
 
@@ -31,12 +35,14 @@ describe('AuthService', () => {
     expect(authService).toBeDefined();
   });
 
-  it('should create a user', async () => {
-    const result = await authService.signupLocal(CreateUserMock);
+  describe('SignUp service', () => {
+    it('should create a user', async () => {
+      const result = await authService.signupLocal(CreateUserMock);
 
-    expect(prisma.user.create).toHaveBeenCalled();
-    expect(result).toHaveProperty('access_token');
-    expect(result).toHaveProperty('refresh_token');
+      expect(prisma.user.create).toHaveBeenCalled();
+      expect(result).toHaveProperty('access_token');
+      expect(result).toHaveProperty('refresh_token');
+    });
   });
 
   describe('SignIn service', () => {
@@ -86,6 +92,43 @@ describe('AuthService', () => {
       await authService.logout(1);
 
       expect(prisma.user.updateMany).toHaveBeenCalled();
+    });
+  });
+
+  describe('RefreshTokens service', () => {
+    it('should refresh a user token', async () => {
+      const bcryptCompareSuccess = jest.fn().mockResolvedValue(true);
+      (bcrypt.compare as jest.Mock) = bcryptCompareSuccess;
+
+      const result = await authService.refreshTokens(1, UserEntityMock.hashRt);
+
+      expect(prisma.user.findUnique).toHaveBeenCalled();
+      expect(result).toHaveProperty('access_token');
+      expect(result).toHaveProperty('refresh_token');
+      expect(result.refresh_token).not.toEqual(UserEntityMock.hashRt);
+    });
+
+    it('should throw Access Denied when user not found', async () => {
+      authRepository.refreshTokens = jest.fn().mockResolvedValue(false);
+
+      try {
+        await authService.refreshTokens(1, UserEntityMock.hashRt);
+      } catch (error) {
+        expect(error.message).toEqual('Access Denied');
+        expect(error.status).toEqual(403);
+      }
+    });
+
+    it('should throw Access Denied when incorrect password', async () => {
+      const bcryptCompare = jest.fn().mockResolvedValue(false);
+      (bcrypt.compare as jest.Mock) = bcryptCompare;
+
+      try {
+        await authService.refreshTokens(1, UserEntityMock.hashRt);
+      } catch (error) {
+        expect(error.message).toEqual('Access Denied');
+        expect(error.status).toEqual(403);
+      }
     });
   });
 });
