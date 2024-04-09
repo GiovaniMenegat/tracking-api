@@ -39,6 +39,7 @@ describe('AuthService', () => {
     expect(result).toHaveProperty('access_token');
     expect(result).toHaveProperty('refresh_token');
   });
+
   describe('SignIn service', () => {
     it('should signin a user', async () => {
       const bcryptCompareSuccess = jest.fn().mockResolvedValue(true);
@@ -78,6 +79,16 @@ describe('AuthService', () => {
         expect(error.message).toEqual('Access Denied');
         expect(error.status).toEqual(403);
       }
+    });
+  });
+
+  describe('Logout service', () => {
+    it('should logout a user', async () => {
+      authRepository.logout = jest.fn().mockResolvedValue(true);
+
+      await authService.logout(1);
+
+      expect(authRepository.logout).toHaveBeenCalled();
     });
   });
 });
