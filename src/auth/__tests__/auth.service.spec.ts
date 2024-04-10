@@ -55,6 +55,11 @@ describe('AuthService', () => {
       expect(prisma.user.findUnique).toHaveBeenCalled();
       expect(result).toHaveProperty('access_token');
       expect(result).toHaveProperty('refresh_token');
+      expect(prisma.user.findUnique).toHaveBeenCalledWith({
+        where: {
+          email: signInMock.email,
+        },
+      });
     });
 
     it('should throw Access Denied when user not found', async () => {
@@ -92,6 +97,17 @@ describe('AuthService', () => {
       await authService.logout(1);
 
       expect(prisma.user.updateMany).toHaveBeenCalled();
+      expect(prisma.user.updateMany).toHaveBeenCalledWith({
+        where: {
+          id: 1,
+          hashRt: {
+            not: null,
+          },
+        },
+        data: {
+          hashRt: null,
+        },
+      });
     });
   });
 
@@ -106,6 +122,11 @@ describe('AuthService', () => {
       expect(result).toHaveProperty('access_token');
       expect(result).toHaveProperty('refresh_token');
       expect(result.refresh_token).not.toEqual(UserEntityMock.hashRt);
+      expect(prisma.user.findUnique).toHaveBeenCalledWith({
+        where: {
+          id: 1,
+        },
+      });
     });
 
     it('should throw Access Denied when user not found', async () => {
