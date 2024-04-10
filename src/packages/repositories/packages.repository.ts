@@ -1,8 +1,7 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreatePackageDto } from '../dto/create-package.dto';
 import { PackageEntity } from '../entities/package.entity';
-import { NotFoundError } from 'src/common/errors/types/NotFoundError';
 import { Prisma } from '@prisma/client';
 import { findAllPackagesByUserResponse } from '../types/packages.interface';
 import { UpdatePackageDto } from '../dto/update-package.dto';
@@ -22,7 +21,7 @@ export class PackagesRepository {
     });
 
     if (!user) {
-      throw new NotFoundError('User not found');
+      throw new NotFoundException('User not found');
     }
 
     const data: Prisma.PackagesCreateInput = {
@@ -60,7 +59,7 @@ export class PackagesRepository {
     });
 
     if (!user) {
-      throw new NotFoundError('User not found');
+      throw new NotFoundException('User not found');
     }
 
     return user;
@@ -78,7 +77,7 @@ export class PackagesRepository {
     });
 
     if (!user) {
-      throw new NotFoundError('User not found');
+      throw new NotFoundException('User not found');
     }
 
     const data: Prisma.PackagesUpdateInput = {
