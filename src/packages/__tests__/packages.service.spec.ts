@@ -3,6 +3,7 @@ import { PackagesService } from '../packages.service';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { PackagesRepository } from '../repositories/packages.repository';
 import {
+  FindAllPackagesByUserResponse,
   PrismaPackagesMock,
   createPackageDto,
   packageEntityMock,
@@ -59,6 +60,44 @@ describe('PackagesService', () => {
 
       try {
         await packagesService.create(createPackageDto, 1);
+      } catch (error) {
+        expect(error.message).toEqual('User not found');
+        expect(error.status).toEqual(404);
+      }
+    });
+  });
+
+  describe('findAllPackagesByUser service', () => {
+    it('should return all packages by user', async () => {
+      prisma.user.findUnique = jest
+        .fn()
+        .mockResolvedValue(FindAllPackagesByUserResponse);
+
+      const result = await packagesService.findAllPackagesByUser(1);
+
+      expect(prisma.user.findUnique).toHaveBeenCalled();
+      expect(result).toEqual(FindAllPackagesByUserResponse);
+      expect(prisma.user.findUnique).toHaveBeenCalledWith({
+        where: {
+          id: 1,
+        },
+        select: {
+          username: true,
+          email: true,
+          packages: {
+            select: {
+              trackingNumber: true,
+            },
+          },
+        },
+      });
+    });
+
+    it('should return User not found when user not found', async () => {
+      prisma.user.findUnique = jest.fn().mockResolvedValue(false);
+
+      try {
+        await packagesService.findAllPackagesByUser(1);
       } catch (error) {
         expect(error.message).toEqual('User not found');
         expect(error.status).toEqual(404);

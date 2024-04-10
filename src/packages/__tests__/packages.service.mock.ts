@@ -3,6 +3,7 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { PackageEntity } from '../entities/package.entity';
 import * as Chance from 'chance';
 import { CreatePackageDto } from '../dto/create-package.dto';
+import { findAllPackagesByUserResponse } from '../types/packages.interface';
 
 const chance = new Chance();
 
@@ -18,6 +19,16 @@ export const createPackageDto = {
   trackingNumber,
 } as CreatePackageDto;
 
+export const FindAllPackagesByUserResponse = {
+  email: chance.email(),
+  username: chance.name(),
+  packages: [
+    {
+      trackingNumber,
+    },
+  ],
+} as findAllPackagesByUserResponse;
+
 export const PrismaPackagesMock = {
   provide: PrismaService,
   useValue: {
@@ -27,7 +38,7 @@ export const PrismaPackagesMock = {
       delete: jest.fn().mockResolvedValue(true),
     },
     user: {
-      findUnique: jest.fn().mockReturnValue(UserEntityMock),
+      findUnique: jest.fn().mockReturnValue(FindAllPackagesByUserResponse),
     },
   },
 };
