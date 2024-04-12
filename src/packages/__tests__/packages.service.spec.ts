@@ -8,6 +8,7 @@ import {
   createPackageDto,
   packageEntityMock,
 } from './packages.service.mock';
+import { getTrackMock } from './packages.controller.mock';
 
 describe('PackagesService', () => {
   let packagesService: PackagesService;
@@ -105,20 +106,19 @@ describe('PackagesService', () => {
     });
   });
 
-  // describe('getTrack service', () => {
-  //   it('should return track of a single package', async () => {
-  //     // jest.spyOn(trackMethod, 'trackNumber').mockImplementation(() => ({ someObjectProperty: 42 }));
-  //     trackNumber = jest.fn().mockReturnValue(getTrackMock);
+  describe('getTrack service', () => {
+    it('should return track of a single package', async () => {
+      jest
+        .spyOn(packagesService, 'getTrack')
+        .mockImplementation(async () => getTrackMock);
 
-  //     // trackNumber()
+      const result = await packagesService.getTrack(
+        createPackageDto.trackingNumber,
+      );
 
-  //     const result = await packagesService.getTrack(
-  //       createPackageDto.trackingNumber,
-  //     );
-
-  //     expect(result).toEqual(getTrackMock);
-  //   });
-  // });
+      expect(result).toEqual(getTrackMock);
+    });
+  });
 
   describe('Update service', () => {
     it('should update a package', async () => {
