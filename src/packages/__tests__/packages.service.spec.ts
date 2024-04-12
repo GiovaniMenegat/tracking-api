@@ -104,4 +104,78 @@ describe('PackagesService', () => {
       }
     });
   });
+
+  // describe('getTrack service', () => {
+  //   it('should return track of a single package', async () => {
+  //     // jest.spyOn(trackMethod, 'trackNumber').mockImplementation(() => ({ someObjectProperty: 42 }));
+  //     trackNumber = jest.fn().mockReturnValue(getTrackMock);
+
+  //     // trackNumber()
+
+  //     const result = await packagesService.getTrack(
+  //       createPackageDto.trackingNumber,
+  //     );
+
+  //     expect(result).toEqual(getTrackMock);
+  //   });
+  // });
+
+  describe('Update service', () => {
+    it('should update a package', async () => {
+      prisma.user.findUnique = jest
+        .fn()
+        .mockResolvedValue(FindAllPackagesByUserResponse);
+
+      prisma.packages.update = jest.fn().mockReturnValue({
+        id: 1,
+        trackingNumber: 'newTrackingNumber',
+        userId: 1,
+      });
+
+      const result = await packagesService.update(1, 1, {
+        trackingNumber: 'newTrackingNumber',
+      });
+
+      expect(prisma.user.findUnique).toHaveBeenCalled();
+      expect(prisma.packages.update).toHaveBeenCalled();
+      expect(result).toEqual({
+        id: 1,
+        trackingNumber: 'newTrackingNumber',
+        userId: 1,
+      });
+      expect(prisma.user.findUnique).toHaveBeenCalledWith({
+        where: {
+          id: 1,
+        },
+      });
+      expect(prisma.packages.update).toHaveBeenCalledWith({
+        data: {
+          ...{
+            trackingNumber: 'newTrackingNumber',
+          },
+          user: {
+            connect: {
+              id: 1,
+            },
+          },
+        },
+        where: {
+          id: 1,
+        },
+      });
+    });
+
+    it('should return User not found when user not found', async () => {
+      prisma.user.findUnique = jest.fn().mockResolvedValue(false);
+
+      try {
+        await packagesService.update(1, 1, {
+          trackingNumber: 'newTrackingNumber',
+        });
+      } catch (error) {
+        expect(error.message).toEqual('User not found');
+        expect(error.status).toEqual(404);
+      }
+    });
+  });
 });
