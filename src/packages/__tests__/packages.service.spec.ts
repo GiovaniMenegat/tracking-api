@@ -178,4 +178,15 @@ describe('PackagesService', () => {
       }
     });
   });
+
+  describe('Delete service', () => {
+    it('should delete a package', async () => {
+      await packagesService.remove(1);
+
+      expect(prisma.packages.delete).toHaveBeenCalled();
+      expect(prisma.packages.delete).toHaveBeenCalledWith({
+        where: { id: 1 },
+      });
+    });
+  });
 });
